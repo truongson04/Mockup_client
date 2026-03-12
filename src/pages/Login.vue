@@ -25,11 +25,10 @@ const onFinish = () => {
       labelAlign="left"
       :style="{
         boxShadow: ' rgba(0, 0, 0, 0.35) 0px 5px 15px',
-        paddingTop: '200px',
-        paddingLeft: '30px',
-        paddingRight: '30px',
-        height: '50%',
-        width: '50%',
+        padding: '30px',
+
+        height: '30%',
+        width: '30%',
         borderRadius: '15px',
       }"
       @finish="onFinish"

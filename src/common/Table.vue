@@ -1,7 +1,9 @@
 <script setup>
-import { computed, ref } from "vue";
-
+import { computed, reactive, ref, watch } from "vue";
+import dayjs from "dayjs";
+import { FunnelPlotOutlined } from "@ant-design/icons-vue";
 const userList = defineModel("userList");
+const showFilterModal = ref(false);
 
 const columns = [
   {
@@ -39,61 +41,58 @@ const searchQuery = ref("");
 const searchCompany = ref("");
 const searchTime = ref([]);
 const filterAction = ref(null);
+const filterGender = ref(null);
 
-const appliedSearchQuery = ref("");
-const appliedSearchCompany = ref("");
-const appliedSearchTime = ref([]);
-const appliedFilterAction = ref(null);
-
+const criteria = ref({});
 const applyFilters = () => {
-  appliedSearchQuery.value = searchQuery.value;
-  appliedSearchCompany.value = searchCompany.value;
-  appliedSearchTime.value = searchTime.value;
-  appliedFilterAction.value = filterAction.value;
+  criteria.value.name = searchQuery.value;
+  criteria.value.timeStart = searchTime.value[0] || "";
+  criteria.value.timeEnd = searchTime.value[1] || "";
+  criteria.value.company = searchCompany.value;
+  criteria.value.action = filterAction.value;
+  criteria.value.gender = filterGender.value;
+  showFilterModal.value = false;
 };
-
 const filteredUsers = computed(() => {
-  if (!userList.value) return [];
+  let newUsers = userList.value;
+  // search by user name
+  if (criteria.value.name) {
+    newUsers = newUsers.filter((user) =>
+      user.name
+        .toLowerCase()
+        .trim()
+        .includes(criteria.value.name.toLowerCase().trim()),
+    );
+  }
 
-  return userList.value.filter((user) => {
-    const isNameMatch = user.name
-      ?.toLowerCase()
-      .includes(appliedSearchQuery.value.toLowerCase());
-
-    const companyName =
-      user.tags
-        ?.find((t) => t.startsWith("Company_"))
-        ?.replace("Company_", "") || "N/A";
-    const isCompanyMatch = companyName
-      .toLowerCase()
-      .includes(appliedSearchCompany.value.toLowerCase());
-
-    let isTimeMatch = true;
-    if (appliedSearchTime.value && appliedSearchTime.value.length === 2 && user.timeUse) {
-      const timeParts = user.timeUse.split(':');
-      if (timeParts.length === 2) {
-        const userTotalMinutes =
-          parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
-
-        const startTotalMinutes =
-          appliedSearchTime.value[0].hour() * 60 + appliedSearchTime.value[0].minute();
-        const endTotalMinutes =
-          appliedSearchTime.value[1].hour() * 60 + appliedSearchTime.value[1].minute();
-
-        isTimeMatch =
-          userTotalMinutes >= startTotalMinutes &&
-          userTotalMinutes <= endTotalMinutes;
-      } else {
-        isTimeMatch = false;
-      }
-    }
-
-    const isActionMatch = appliedFilterAction.value
-      ? user.action === appliedFilterAction.value
-      : true;
-
-    return isNameMatch && isCompanyMatch && isTimeMatch && isActionMatch;
-  });
+  //filter by time
+  if (criteria.value.timeStart && criteria.value.timeEnd) {
+    const startTime = dayjs(criteria.value.timeStart).format("HH:mm");
+    const endTime = dayjs(criteria.value.timeEnd).format("HH:mm");
+    newUsers = newUsers.filter(
+      (user) => startTime <= user.timeUse && endTime >= user.timeUse,
+    );
+  }
+  if (criteria.value.company) {
+    newUsers = newUsers.filter(
+      (user) =>
+        user.tags
+          .find((tag) => tag.startsWith("Company_"))
+          .replace("Company_", "") === criteria.value.company,
+    );
+  }
+  if (criteria.value.action) {
+    newUsers = newUsers.filter((user) => user.action === criteria.value.action);
+  }
+  if (criteria.value.gender) {
+    newUsers = newUsers.filter(
+      (user) =>
+        user.tags
+          .find((tag) => tag.startsWith("Gender_"))
+          .replace("Gender_", "") === criteria.value.gender,
+    );
+  }
+  return newUsers;
 });
 </script>
 <template>
@@ -108,22 +107,58 @@ const filteredUsers = computed(() => {
       v-model:value="searchCompany"
       style="width: 200px"
     />
-    <a-time-range-picker
-      v-model:value="searchTime"
-      format="HH:mm"
-      style="width: 250px"
-      allowClear
-    />
-    <a-select
-      v-model:value="filterAction"
-      placeholder="Filter Action"
-      style="width: 150px"
-      allowClear
+    <a-button type="primary" @click="showFilterModal = true"
+      ><FunnelPlotOutlined
+    /></a-button>
+    <a-modal
+      v-model:open="showFilterModal"
+      title="Filter"
+      okText="Apply"
+      cancelText="Cancel"
+      @ok="applyFilters"
     >
-      <a-select-option value="in">Arrive (In)</a-select-option>
-      <a-select-option value="out">Leave (Out)</a-select-option>
-    </a-select>
-    <a-button type="primary" @click="applyFilters">Apply Filter</a-button>
+      <a-form layout="vertical">
+        <a-form-item label="Time Range">
+          <a-time-range-picker
+            v-model:value="searchTime"
+            format="HH:mm"
+            style="width: 100%"
+          />
+        </a-form-item>
+
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <a-form-item label="Action">
+              <a-select
+                v-model:value="filterAction"
+                placeholder="Chọn hành động"
+                style="width: 100%"
+                allowClear
+              >
+                <a-select-option value="">All</a-select-option>
+                <a-select-option value="in">Arrive (In)</a-select-option>
+                <a-select-option value="out">Leave (Out)</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+
+          <a-col :span="12">
+            <a-form-item label="Gender">
+              <a-select
+                v-model:value="filterGender"
+                placeholder="Select gender"
+                style="width: 100%"
+                allowClear
+              >
+                <a-select-option value="">All</a-select-option>
+                <a-select-option value="Male">Male</a-select-option>
+                <a-select-option value="Female">Female</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
+    </a-modal>
   </div>
   <a-table :dataSource="filteredUsers" :columns="columns">
     <template #bodyCell="{ column, record, index }">
@@ -138,7 +173,7 @@ const filteredUsers = computed(() => {
         }}
       </template>
       <template v-else-if="column.key === 'action'">
-        <a-tag :color="record.action === 'in' ? 'success' : 'warning'">
+        <a-tag :color="record.action === 'in' ? 'success' : 'error'">
           {{ record.action === "in" ? "Arrive" : "Leave" }}
         </a-tag>
       </template>

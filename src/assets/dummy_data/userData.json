@@ -1,28 +1,20 @@
 [
-   {
-    "id":1,
+  {
+    "id": 1,
     "name": "Nguyen Van An",
     "email": "an.nguyen@example.com",
     "password": "123",
     "action": "out",
     "timeUse": "08:15",
-    "tags": [
-      "Company_ABC",
-      "Nationality_VN",
-      "Gender_Male"
-    ]
+    "tags": ["Company_ABC", "Nationality_VN", "Gender_Male"]
   },
-   {
-    "id":2, 
+  {
+    "id": 2,
     "name": "Nguyen Van An",
     "email": "an.nguyen@example.com",
     "password": "123",
     "action": "in",
-    "timeUse": "08:15",
-    "tags": [
-      "Company_ABC",
-      "Nationality_VN",
-      "Gender_Male"
-    ]
+    "timeUse": "09:15",
+    "tags": ["Company_ABC", "Nationality_VN", "Gender_Male"]
   }
 ]

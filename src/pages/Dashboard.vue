@@ -7,7 +7,9 @@ import Table from "../common/Table.vue";
 import Analysis from "../components/admin/Analysis.vue";
 const userStore = useUsersStore();
 
-onMounted(() => {});
+onMounted(() => {
+  console.log(userStore.countryList);
+});
 </script>
 
 <template>
