@@ -5,6 +5,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 import router from './router/index';
 import { createPinia } from 'pinia';
+import 'flag-icons/css/flag-icons.min.css';
 const pinia = createPinia();
 const app = createApp(App);
 
