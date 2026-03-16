@@ -22,7 +22,7 @@ const userStore = useUsersStore();
     <a-layout-content class="content">
       <div class="inner-content">
         <Analysis />
-        <Table :user-list="userStore.userList" />
+        <Table />
       </div>
     </a-layout-content>
   </a-layout>

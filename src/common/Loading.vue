@@ -3,7 +3,7 @@
   <div class="loading-container">
     <a-spin
       :spinning="true"
-      tip="Loading..."
+      tip="読み込み中..."
       size="large"
       class="spin-circle"
     ></a-spin>
