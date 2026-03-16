@@ -151,51 +151,31 @@ onMounted(() => {
 <template>
   <div class="filter-wrapper">
     <a-form layout="vertical" class="filter-form">
-      <a-row :gutter="[24, 16]">
-        <!-- search by name form  -->
-        <a-col :span="24">
-          <a-row :gutter="24">
-            <a-col :xs="24" :md="12">
-              <a-form-item label="氏名">
-                <a-input
-                  v-model:value="searchQuery"
-                  placeholder="名前やメールで検索..."
-                  allow-clear
-                >
-                  <template #prefix>
-                    <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
-                  </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :xs="24" :md="12">
-              <a-form-item label="会社名">
-                <a-input
-                  v-model:value="searchCompany"
-                  placeholder="会社名を入力..."
-                  allow-clear
-                >
-                  <template #prefix>
-                    <BankOutlined style="color: rgba(0, 0, 0, 0.25)" />
-                  </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-col>
-        <!-- search by time range  -->
+      <a-row :gutter="[16, 12]">
         <a-col :xs="24" :md="6">
-          <a-form-item label="時間範囲">
-            <a-time-range-picker
-              v-model:value="searchTime"
-              format="HH:mm"
-              style="width: 100%"
-              :placeholder="['開始', '終了']"
+          <a-form-item label="氏名">
+            <a-input
+              v-model:value="searchQuery"
+              placeholder="名前やメールで検索..."
+              allow-clear
             >
-              <template #suffixIcon>
-                <ClockCircleOutlined />
+              <template #prefix>
+                <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
               </template>
-            </a-time-range-picker>
+            </a-input>
+          </a-form-item>
+        </a-col>
+        <a-col :xs="24" :md="6">
+          <a-form-item label="会社名">
+            <a-input
+              v-model:value="searchCompany"
+              placeholder="会社名を入力..."
+              allow-clear
+            >
+              <template #prefix>
+                <BankOutlined style="color: rgba(0, 0, 0, 0.25)" />
+              </template>
+            </a-input>
           </a-form-item>
         </a-col>
         <a-col :xs="24" :md="6">
@@ -212,7 +192,6 @@ onMounted(() => {
             </a-range-picker>
           </a-form-item>
         </a-col>
-        <!-- search by action -->
 
         <a-col :xs="24" :md="6">
           <a-form-item label="アクション">
@@ -227,41 +206,26 @@ onMounted(() => {
             </a-select>
           </a-form-item>
         </a-col>
-        <!-- search by gender  -->
-        <a-col :xs="24" :md="6">
-          <a-form-item label="性別">
-            <a-select
-              v-model:value="filterGender"
-              placeholder="性別を選択"
-              allowClear
-            >
-              <a-select-option value="">全て表示</a-select-option>
-              <a-select-option value="Male">男性</a-select-option>
-              <a-select-option value="Female">女性</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
         <!-- apply button  -->
         <a-col :span="24" class="action-buttons-col">
-          <transition name="filter-fade">
-            <div v-if="hasFilterChanges" class="filter-actions-inline">
-              <a-space>
-                <a-tooltip title="フィルターをリセット">
-                  <a-button @click="handleClearFilters" class="reset-btn">
-                    <template #icon><ReloadOutlined /></template>
-                  </a-button>
-                </a-tooltip>
-                <a-button
-                  type="primary"
-                  @click="handleSearch"
-                  class="apply-btn"
-                >
-                  <template #icon><SearchOutlined /></template>
-                  フィルター適用
+          <div class="filter-actions-inline">
+            <a-space>
+              <a-tooltip title="フィルターをリセット">
+                <a-button @click="handleClearFilters" class="reset-btn">
+                  <template #icon><ReloadOutlined /></template>
+                  リセット
                 </a-button>
-              </a-space>
-            </div>
-          </transition>
+              </a-tooltip>
+              <a-button
+                type="primary"
+                @click="handleSearch"
+                class="apply-btn"
+              >
+                <template #icon><SearchOutlined /></template>
+                フィルター適用
+              </a-button>
+            </a-space>
+          </div>
         </a-col>
       </a-row>
     </a-form>
@@ -269,7 +233,7 @@ onMounted(() => {
 </template>
 <style scoped>
 .filter-wrapper {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   background-color: #ffffff;
   border-radius: 12px;
   border: 1px solid #e8e8e8;
@@ -319,18 +283,18 @@ onMounted(() => {
 }
 
 .apply-btn {
-  background-color: #001529 !important;
-  border-color: #001529 !important;
+  background-color: #2f5d86 !important;
+  border-color: #2f5d86 !important;
   font-weight: 500;
   padding: 4px 20px;
   height: 38px;
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 21, 41, 0.2);
+  box-shadow: 0 2px 4px rgba(47, 93, 134, 0.2);
 }
 
 .apply-btn:hover {
-  background-color: #002140 !important;
-  border-color: #002140 !important;
+  background-color: #244b6b !important;
+  border-color: #244b6b !important;
   transform: translateY(-1px);
 }
 
@@ -392,11 +356,26 @@ onMounted(() => {
     flex-direction: column;
     gap: 10px;
   }
+
+  :deep(.ant-form-item-label > label) {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .filter-form {
+    padding: 8px;
+  }
+
+  .apply-btn, .reset-btn {
+    height: 34px;
+    font-size: 12px;
+  }
 }
 
 :deep(.ant-form-item-label > label) {
-  font-weight: 500;
-  color: #595959;
+  font-weight: 700;
+  color: #262626;
   font-size: 13px;
 }
 

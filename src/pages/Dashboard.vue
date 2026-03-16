@@ -11,7 +11,7 @@ const userStore = useUsersStore();
 <template>
   <a-layout class="dashboard-layout">
     <a-layout-header class="header">
-      <div class="logo">Company name</div>
+      <div class="logo">現場状況ダッシュボード</div>
       <div class="header-right">
         <a-avatar size="large"
           ><template #icon><UserOutlined /></template
@@ -31,6 +31,7 @@ const userStore = useUsersStore();
 <style scoped>
 .dashboard-layout {
   min-height: 100vh;
+  background-color: #f0f2f5;
 }
 
 .header {
@@ -40,6 +41,12 @@ const userStore = useUsersStore();
   padding: 0 24px;
   background-color: #566a83;
   color: #fff;
+  height: 64px;
+  line-height: 64px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header-right {
@@ -50,19 +57,54 @@ const userStore = useUsersStore();
 
 .logo {
   font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .content {
-  padding: 16px 24px;
+  padding: 24px;
 }
 
 .inner-content {
-  background: #fff;
-  padding: 16px 20px;
-  min-height: calc(100vh - 100px);
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  padding: 0;
+  min-height: calc(100vh - 112px);
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    font-size: 13px;
+  }
+
+  .header {
+    padding: 0 16px;
+    height: 56px;
+    line-height: 56px;
+  }
+  
+  .logo {
+    font-size: 0.9rem;
+  }
+  
+  .content {
+    padding: 16px 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header {
+    padding: 0 10px;
+  }
+  
+  .logo {
+    font-size: 0.85rem;
+  }
+  
+  .content {
+    padding: 12px 8px;
+  }
 }
 </style>

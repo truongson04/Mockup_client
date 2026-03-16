@@ -1,144 +1,257 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import Loading from "../common/Loading.vue";
 import useUIStore from "../stores/UIStore";
-import { MailOutlined, LockOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+import { useRouter } from "vue-router";
+import { AppstoreOutlined } from "@ant-design/icons-vue";
+
+const router = useRouter();
+const UIStore = useUIStore();
 
 const formStatus = reactive({
   email: "",
   password: "",
-  remember: true,
 });
 
-const UIStore = useUIStore();
 const onFinish = () => {
   UIStore.isLoading = true;
+
+  setTimeout(() => {
+    UIStore.isLoading = false;
+    message.success("ログインに成功しました");
+    router.push("/dashboard");
+  }, 1000);
+};
+
+const handleForgotPassword = (e) => {
+  e.preventDefault();
+  message.info("パスワードリセット機能は現在準備中です。");
 };
 </script>
+
 <template>
   <Loading v-if="UIStore.isLoading" />
   <div class="login-wrapper">
-    <div class="login-card">
-      <div class="login-header">
-        <h2>おかえり</h2>
-        <p>サインインするには詳細を入力してください。</p>
+    <div class="split-container">
+      <!-- Left side: Brand -->
+      <div class="brand-side">
+        <div class="brand-content">
+          <div class="logo-circle">
+            <AppstoreOutlined style="font-size: 32px; color: #2f5d86" />
+          </div>
+          <h1 class="brand-title">safie Entrance2</h1>
+        </div>
       </div>
 
-      <a-form
-        name="basic"
-        :model="formStatus"
-        layout="vertical"
-        @finish="onFinish"
-      >
-        <a-form-item
-          label="電子メール"
-          name="email"
-          :rules="[
-            { required: true, message: 'メールアドレスを入力してください' },
-            {
-              type: 'email',
-              message: '有効なメールアドレスを入力してください',
-            },
-          ]"
-        >
-          <a-input
-            v-model:value="formStatus.email"
-            size="large"
-            placeholder="メールアドレスを入力してください"
-          >
-            <template #prefix>
-              <MailOutlined style="color: rgba(0, 0, 0, 0.25)" />
-            </template>
-          </a-input>
-        </a-form-item>
+      <!-- Vertical Line -->
+      <div class="vertical-line"></div>
 
-        <a-form-item
-          label="パスワード"
-          name="password"
-          :rules="[{ required: true, message: 'パスワードを入力してください' }]"
-        >
-          <a-input-password
-            v-model:value="formStatus.password"
-            size="large"
-            placeholder="••••••••"
-          >
-            <template #prefix>
-              <LockOutlined style="color: rgba(0, 0, 0, 0.25)" />
-            </template>
-          </a-input-password>
-        </a-form-item>
+      <!-- Right side: Form -->
+      <div class="form-side">
+        <div class="form-container">
+          <h2 class="login-heading">ログイン</h2>
 
-        <div class="form-actions">
-          <a-form-item name="remember" no-style>
-            <a-checkbox v-model:checked="formStatus.remember">
-              私を覚えてますか
-            </a-checkbox>
-          </a-form-item>
-          <a class="forgot-password" href="#">パスワードをお忘れですか？</a>
+          <a-form
+            :model="formStatus"
+            layout="vertical"
+            @finish="onFinish"
+            class="login-form"
+          >
+            <a-form-item name="email">
+              <template #label>
+                <span class="custom-label"
+                  >メールアドレス<span class="required-mark">*</span></span
+                >
+              </template>
+              <a-input
+                v-model:value="formStatus.email"
+                size="large"
+                class="form-input"
+              />
+            </a-form-item>
+
+            <a-form-item name="password">
+              <template #label>
+                <span class="custom-label"
+                  >パスワード<span class="required-mark">*</span></span
+                >
+              </template>
+              <a-input-password
+                v-model:value="formStatus.password"
+                size="large"
+                class="form-input"
+              />
+            </a-form-item>
+
+            <a-form-item style="margin-top: 40px">
+              <a-button
+                type="primary"
+                html-type="submit"
+                block
+                class="login-button"
+              >
+                ログイン
+              </a-button>
+            </a-form-item>
+
+            <div class="help-links">
+              <a @click="handleForgotPassword" class="forgot-link">
+                パスワードを忘れた方はこちら
+              </a>
+            </div>
+          </a-form>
         </div>
-
-        <a-form-item style="margin-top: 24px">
-          <a-button type="primary" html-type="submit" size="large" block>
-            サインイン
-          </a-button>
-        </a-form-item>
-      </a-form>
+      </div>
     </div>
   </div>
 </template>
+
 <style scoped>
 .login-wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f2f5;
+  background-color: #f8fbff;
   padding: 20px;
 }
 
-.login-card {
-  width: 100%;
-  max-width: 400px;
-  background: #ffffff;
-  padding: 40px 32px;
-  border-radius: 12px;
-
-  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.login-header h2 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 600;
-  color: #1f1f1f;
-}
-
-.login-header p {
-  margin: 8px 0 0;
-  color: #8c8c8c;
-  font-size: 14px;
-}
-
-.form-actions {
+.split-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  width: 100%;
+  max-width: 900px;
+  justify-content: center;
 }
 
-.forgot-password {
+.brand-side {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 60px;
+}
+
+.brand-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid #d9e2ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: white;
+}
+
+.logo-circle img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.brand-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2f5d86;
+  letter-spacing: 0.5px;
+}
+
+.vertical-line {
+  width: 1px;
+  height: 240px;
+  background-color: #d9e2ef;
+}
+
+.form-side {
+  flex: 1;
+  padding-left: 60px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.custom-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.required-mark {
+  color: #d9363e;
+  margin-left: 2px;
+}
+
+.form-input {
+  border-radius: 4px;
+  height: 44px;
+}
+
+.login-button {
+  height: 48px;
+  background-color: #3b4a6b !important;
+  border-color: #3b4a6b !important;
   font-size: 14px;
-  color: #1890ff;
-  transition: color 0.3s;
+  font-weight: 600;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(59, 74, 107, 0.2);
 }
 
-.forgot-password:hover {
-  color: #40a9ff;
+.login-button:hover {
+  background-color: #2c3852 !important;
+  opacity: 0.9;
+}
+
+.help-links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.forgot-link {
+  font-size: 12px;
+  color: #2f5d86;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .split-container {
+    flex-direction: column;
+  }
+
+  .brand-side {
+    padding-right: 0;
+    margin-bottom: 40px;
+    justify-content: center;
+  }
+
+  .vertical-line {
+    display: none;
+  }
+
+  .form-side {
+    padding-left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

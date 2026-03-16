@@ -107,6 +107,7 @@ const useUsersStore = defineStore("users", () => {
         CO: "コロンビア",
         PE: "ペルー",
         NZ: "ニュージーランド",
+        MM:"ミャンマー"
       };
 
       return names[code] || code;
