@@ -133,7 +133,7 @@ const handleSelectCountry = (statId) => {
 
 /* --- CARD 2: NATIONALITY STATS --- */
 .stat-card :deep(.ant-card-body) {
-  overflow: hidden; /* Giữ scroll ngang gọn gàng */
+  overflow: hidden;
   padding: 24px;
 }
 
@@ -276,7 +276,9 @@ const handleSelectCountry = (statId) => {
   .stat-card :deep(.ant-card-body) {
     padding: 12px;
   }
-
+  .stats-row {
+    gap: 42px;
+  }
   .total-number {
     font-size: 48px;
   }
@@ -305,6 +307,11 @@ const handleSelectCountry = (statId) => {
   }
   .stat-flag {
     font-size: 24px;
+  }
+}
+@media (max-width: 400px) {
+  .national-container {
+    width: 12px;
   }
 }
 </style>

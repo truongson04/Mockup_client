@@ -10,25 +10,30 @@ const columns = [
     title: "氏名",
     dataIndex: "name",
     key: "name",
+    width: 120,
   },
   {
     title: "電子メール",
     dataIndex: "email",
     key: "email",
+    width: 200,
   },
   {
     title: "会社名",
     key: "company",
+    width: 150,
   },
   {
     title: "アクション（入室／退室）",
     dataIndex: "action",
     key: "action",
+    width: 160,
   },
   {
     title: "入場時刻",
     dataIndex: "timeUse",
     key: "timeUse",
+    width: 120,
   },
 ];
 
@@ -90,7 +95,7 @@ const pagination = reactive({
         :row-class-name="getRowClassName"
         bordered
         size="middle"
-        :scroll="{ x: 800 }"
+        :scroll="{ x: 'max-content' }"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'company'">
@@ -103,12 +108,7 @@ const pagination = reactive({
           <template v-else-if="column.key === 'action'">
             <a-tag
               :color="record.action === 'in' ? 'success' : 'error'"
-              style="
-                width: 60px;
-                display: flex;
-                justify-content: center;
-                margin: 0 auto;
-              "
+              style="width: 60px; display: flex; justify-content: center"
             >
               {{ record.action === "in" ? "入室" : "退室" }}
             </a-tag>
@@ -123,7 +123,6 @@ const pagination = reactive({
 </template>
 
 <style scoped>
-/* 1. Base Styles (Desktop First but fluid) */
 .table-container {
   background: white;
   padding: 24px;
@@ -132,13 +131,13 @@ const pagination = reactive({
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden; /* Ngăn scroll toàn trang, giữ scroll trong bảng */
+  overflow: hidden;
 }
 
 .table-controls {
   padding-bottom: 16px;
   display: flex;
-  flex-wrap: wrap; /* Cho phép rớt dòng nếu thiếu không gian */
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
@@ -156,10 +155,9 @@ const pagination = reactive({
   gap: 8px;
   font-size: 14px;
   color: #595959;
-  white-space: nowrap; /* Không cho rớt dòng chữ "Hiển thị x kiện" */
+  white-space: nowrap;
 }
 
-/* Custom Button Colors */
 .print-btn,
 .csv-btn {
   background-color: #2f5d86 !important;
@@ -176,7 +174,6 @@ const pagination = reactive({
   border-color: #244b6b !important;
 }
 
-/* Ant Design Table Overrides */
 :deep(.ant-select-selector) {
   border-radius: 4px !important;
 }
@@ -195,7 +192,7 @@ const pagination = reactive({
 :deep(.ant-table-thead > tr > th) {
   background-color: #e7eaef;
   border-top: 1px solid gray;
-  white-space: nowrap; /* Tránh rớt dòng ở tiêu đề bảng */
+  white-space: nowrap;
 }
 
 :deep(.ant-table.ant-table-bordered > .ant-table-container),
@@ -220,7 +217,6 @@ const pagination = reactive({
   border-color: gray;
 }
 
-/* Flexbox cho Pagination (Phân trang) */
 :deep(.ant-pagination) {
   margin: 16px 0 0 0 !important;
   display: flex;
@@ -229,15 +225,12 @@ const pagination = reactive({
   gap: 8px;
 }
 :deep(.ant-pagination-total-text) {
-  flex: 1 1 100%; /* Chiếm 1 dòng riêng ở Mobile, đẩy các nút sang dòng dưới */
+  flex: 1 1 100%;
   font-weight: 700;
   color: #262626;
   margin-right: 0;
 }
 
-/* --- RESPONSIVE MEDIA QUERIES --- */
-
-/* Tablet & Nhỏ hơn (<= 768px) */
 @media (max-width: 768px) {
   .table-container {
     padding: 16px;
@@ -245,12 +238,12 @@ const pagination = reactive({
 
   .table-controls {
     flex-direction: column;
-    align-items: stretch; /* Kéo giãn các phần tử ra full chiều ngang */
+    align-items: stretch;
     gap: 12px;
   }
 
   .action-buttons {
-    flex-direction: column; /* Các nút xếp dọc */
+    flex-direction: column;
     width: 100%;
   }
 
@@ -260,10 +253,9 @@ const pagination = reactive({
   }
 
   .function-selector {
-    justify-content: flex-end; /* Đẩy phần chọn số lượng sang phải */
+    justify-content: flex-start;
   }
 
-  /* Đẩy phần tổng số trang xuống và căn giữa các nút bấm */
   :deep(.ant-pagination) {
     justify-content: center;
   }
@@ -273,7 +265,6 @@ const pagination = reactive({
   }
 }
 
-/* Điện thoại di động nhỏ (<= 480px) */
 @media (max-width: 480px) {
   .table-container {
     padding: 12px;
@@ -290,18 +281,49 @@ const pagination = reactive({
   }
 
   :deep(.ant-table-thead > tr > th),
-  :deep(.ant-table-tbody > tr > td) {
-    padding: 12px 8px !important; /* Thu nhỏ padding ô để hiển thị được nhiều nội dung hơn */
+  :deep(.ant-table-tbody > tr:not(.ant-table-measure-row) > td) {
+    padding: 12px 10px 12px 41px !important;
+    white-space: nowrap !important;
   }
 }
 
-/* Màn hình Desktop lớn (>= 769px) - Đưa text phân trang sang bên trái */
+@media (max-width: 400px) {
+  .table-container {
+    padding: 8px;
+  }
+
+  .action-buttons {
+    gap: 4px;
+  }
+
+  .print-btn,
+  .csv-btn {
+    font-size: 11px;
+    height: 30px;
+    padding: 0 4px;
+  }
+
+  .function-selector {
+    font-size: 11px;
+  }
+
+  :deep(.ant-table) {
+    font-size: 11px !important;
+  }
+
+  :deep(.ant-table-thead > tr > th),
+  :deep(.ant-table-tbody > tr:not(.ant-table-measure-row) > td) {
+    padding: 12px 34px !important;
+    white-space: nowrap !important;
+  }
+}
+
 @media (min-width: 769px) {
   :deep(.ant-pagination) {
     justify-content: flex-end;
   }
   :deep(.ant-pagination-total-text) {
-    flex: 1; /* Đẩy các nút sang sát lề phải */
+    flex: 1;
   }
 }
 </style>
