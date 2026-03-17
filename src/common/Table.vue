@@ -1,41 +1,48 @@
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { PrinterOutlined, FileExcelOutlined } from "@ant-design/icons-vue";
 
 import Filter from "../components/Filter.vue";
 import useUsersStore from "../stores/usersStore";
 
-const columns = [
-  {
-    title: "氏名",
-    dataIndex: "name",
-    key: "name",
-    width: 120,
-  },
-  {
-    title: "電子メール",
-    dataIndex: "email",
-    key: "email",
-    width: 200,
-  },
-  {
-    title: "会社名",
-    key: "company",
-    width: 150,
-  },
-  {
-    title: "アクション（入室／退室）",
-    dataIndex: "action",
-    key: "action",
-    width: 160,
-  },
-  {
-    title: "入場時刻",
-    dataIndex: "timeUse",
-    key: "timeUse",
-    width: 120,
-  },
-];
+const windowWidth = ref(window.innerWidth);
+const onResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+onMounted(() => window.addEventListener("resize", onResize));
+onUnmounted(() => window.removeEventListener("resize", onResize));
+
+const availableWidth = computed(() => {
+  const w = windowWidth.value;
+  if (w <= 400) return w - 16; // padding: 8px each side
+  if (w <= 480) return w - 24; // padding: 12px each side
+  if (w <= 768) return w - 32; // padding: 16px each side
+  if (w <= 1024) return w - 48; // padding: 24px each side
+  return w;
+});
+
+const columns = computed(() => {
+  const isMobileOrTablet = windowWidth.value <= 1024;
+  const col1Width = isMobileOrTablet
+    ? Math.floor(availableWidth.value * 0.38)
+    : 120;
+  const col2Width = isMobileOrTablet
+    ? Math.floor(availableWidth.value * 0.62)
+    : 200;
+
+  return [
+    { title: "氏名", dataIndex: "name", key: "name", width: col1Width },
+    { title: "電子メール", dataIndex: "email", key: "email", width: col2Width },
+    { title: "会社名", key: "company", width: 150 },
+    {
+      title: "アクション（入室／退室）",
+      dataIndex: "action",
+      key: "action",
+      width: 160,
+    },
+    { title: "入場時刻", dataIndex: "timeUse", key: "timeUse", width: 120 },
+  ];
+});
 
 const getRowClassName = (record, index) => {
   return index % 2 === 0 ? "table-row-even" : "table-row-odd";
@@ -131,7 +138,8 @@ const pagination = reactive({
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: visible;
 }
 
 .table-controls {
@@ -147,6 +155,12 @@ const pagination = reactive({
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .function-selector {
@@ -282,7 +296,7 @@ const pagination = reactive({
 
   :deep(.ant-table-thead > tr > th),
   :deep(.ant-table-tbody > tr:not(.ant-table-measure-row) > td) {
-    padding: 12px 10px 12px 41px !important;
+    padding: 12px 8px !important;
     white-space: nowrap !important;
   }
 }
@@ -313,7 +327,7 @@ const pagination = reactive({
 
   :deep(.ant-table-thead > tr > th),
   :deep(.ant-table-tbody > tr:not(.ant-table-measure-row) > td) {
-    padding: 12px 34px !important;
+    padding: 10px 8px !important;
     white-space: nowrap !important;
   }
 }
